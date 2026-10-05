@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambridge Movers A1 </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;600;700&display=swap');
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #a8edd9 0%, #fed6e3 100%);
+            min-height: 100vh;
+        }
+
+        .font-heading {
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .btn-option {
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 0 #CBD5E1;
+        }
+
+        .btn-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #94A3B8;
+        }
+
+        .btn-option:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 transparent;
+        }
+
+        .correct-anim {
+            animation: bounce 0.6s ease;
+            background-color: #4ADE80 !important;
+            color: white !important;
+            border-color: #22C55E !important;
+            box-shadow: 0 4px 0 #16A34A !important;
+        }
+
+        .wrong-anim {
+            animation: shake 0.5s ease;
+            background-color: #FCA5A5 !important;
+            color: white !important;
+            border-color: #EF4444 !important;
+            box-shadow: 0 4px 0 #DC2626 !important;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex items-center justify-center min-h-screen">
+
+    <div id="app" class="w-full max-w-3xl glass-card p-6 md:p-10 relative overflow-hidden">
+        <!-- Start Screen -->
+        <div id="start-screen" class="text-center py-8">
+            <div class="text-6xl mb-4 animate-bounce">🦁</div>
+            <h1 class="text-3xl md:text-5xl font-heading text-indigo-600 mb-4">CAMBRIDGE MOVERS A1</h1>
+           
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 text-left text-xs text-gray-600 bg-indigo-50 p-4 rounded-xl">
+                <div>👨‍👩‍👧 FAMILY</div>
+                <div>🐱 ANIMAL</div>
+                <div>🍎 FOOD</div>
+                <div>🏫 SCHOOL</div>
+                <div>👗 CLOTHES</div>
+                <div>🏥 PLACE</div>
+                <div>⚽ SPORT</div>
+                <div>🌤️ WEATHER</div>
+            </div>
+
+            <button onclick="startGame()" class="bg-amber-400 hover:bg-amber-500 text-indigo-900 font-heading text-2xl px-10 py-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
+                GAME START </START>! 🚀
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <!-- Header Info -->
+            <div class="flex flex-wrap justify-between items-center mb-6 gap-2">
+                <div class="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full font-bold text-sm md:text-base">
+                    📌 Câu: <span id="current-question">1</span>/50
+                </div>
+                <div class="bg-amber-100 text-amber-800 px-4 py-2 rounded-full font-bold text-sm md:text-base">
+                    ⭐ Điểm: <span id="score">0</span>
+                </div>
+                <div id="topic-tag" class="bg-pink-100 text-pink-700 px-4 py-2 rounded-full font-bold text-xs md:text-sm">
+                    Chủ đề
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 h-4 rounded-full mb-6 overflow-hidden p-0.5">
+                <div id="progress-bar" class="bg-gradient-to-r from-teal-400 to-indigo-500 h-full rounded-full transition-all duration-300" style="width: 2%"></div>
+            </div>
+
+            <!-- Question Box -->
+            <div class="bg-white p-6 rounded-2xl shadow-inner border-2 border-indigo-50 mb-6">
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold text-gray-800 leading-snug">
+                    Question text goes here
+                </h2>
+            </div>
+
+            <!-- Options -->
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Buttons injected by JS -->
+            </div>
+
+            <!-- Explanation Box -->
+            <div id="explanation-box" class="hidden bg-emerald-50 border-2 border-emerald-300 p-4 rounded-2xl mb-6">
+                <div class="flex items-center gap-2 text-emerald-800 font-bold mb-1">
+                    <i class="fa-solid fa-lightbulb text-amber-500"></i> 解 thích chi tiết:
+                </div>
+                <p id="explanation-text" class="text-gray-700 text-sm md:text-base"></p>
+            </div>
+
+            <!-- Next Button -->
+            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-indigo-600 hover:bg-indigo-700 text-white font-heading text-xl py-4 rounded-2xl shadow-lg transition">
+                NEXT QUESTION ➔
+            </button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden text-center py-8">
+            <div id="result-icon" class="text-7xl mb-4">🏆</div>
+            <h2 class="text-3xl font-heading text-indigo-600 mb-2">FINISH!</h2>
+            <p class="text-gray-600 text-lg mb-6">You're done!</p>
+
+            <div class="bg-indigo-50 p-6 rounded-2xl mb-8 max-w-sm mx-auto">
+                <p class="text-gray-600 text-base mb-2">Tổng số điểm của bé:</p>
+                <p class="text-5xl font-heading text-amber-500 mb-4"><span id="final-score">0</span> / 50</p>
+                <p id="result-feedback" class="text-indigo-800 font-bold text-sm"></p>
+            </div>
+
+            <button onclick="startGame()" class="bg-teal-400 hover:bg-teal-500 text-indigo-900 font-heading text-xl px-8 py-4 rounded-full shadow-lg transition">
+                DO IT AGAIN 🔄
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            // Con người & Gia đình
+            {
+                topic: "👨‍👩‍👧 Gia đình",
+                question: "Hãy chọn từ tiếng Anh có nghĩa là 'Chú, bác, cậu':",
+                options: ["A. Aunt", "B. Uncle", "C. Cousin", "D. Brother"],
+                answer: 1,
+                explain: "'Uncle' nghĩa là chú, bác, cậu. 'Aunt' là cô/dì/bác gái, 'Cousin' là anh chị em họ."
+            },
+            {
+                topic: "👨‍👩‍👧 Gia đình",
+                question: "Mẹ của mẹ em (bà) trong tiếng Anh là gì?",
+                options: ["A. Granddaughter", "B. Grandmother", "C. Daughter", "D. Sister"],
+                answer: 1,
+                explain: "'Grandmother' (hoặc Grandma) nghĩa là Bà. 'Granddaughter' là cháu gái của ông bà."
+            },
+            {
+                topic: "👨‍👩‍👧 Gia đình",
+                question: "Từ nào nghĩa là 'Anh, chị hoặc em họ'?",
+                options: ["A. Cousin", "B. Uncle", "C. Parent", "D. Son"],
+                answer: 0,
+                explain: "'Cousin' là từ dùng để chỉ anh, chị hoặc em họ."
+            },
+            {
+                topic: "👨‍👩‍👧 Gia đình",
+                question: "Hình thức số nhiều của từ 'Child' (một đứa trẻ) là gì?",
+                options: ["A. Childs", "B. Childes", "C. Children", "D. Childrens"],
+                answer: 2,
+                explain: "Số nhiều bất quy tắc của 'Child' là 'Children' (những đứa trẻ)."
+            },
+
+            // Ngoại hình & Tính cách
+            {
+                topic: "✨ Ngoại hình & Tính cách",
+                question: "Bác ấy có bộ 'Râu' rất đẹp. Từ 'Râu' trong tiếng Anh là:",
+                options: ["A. Hair", "B. Beard", "C. Mustache", "D. Tooth"],
+                answer: 1,
+                explain: "'Beard' nghĩa là bộ râu (ở cằm và má). 'Mustache' là ria mép."
+            },
+            {
+                topic: "✨ Ngoại hình & Tính cách",
+                question: "Mái tóc xoăn được gọi là gì trong tiếng Anh Movers?",
+                options: ["A. Straight hair", "B. Fair hair", "C. Curly hair", "D. Long hair"],
+                answer: 2,
+                explain: "'Curly hair' là tóc xoăn. 'Straight hair' là tóc thẳng."
+            },
+            {
+                topic: "✨ Ngoại hình & Tính cách",
+                question: "Từ nào mô tả một bạn nhỏ 'Thông minh, nhanh trí'?",
+                options: ["A. Quiet", "B. Clever", "C. Tall", "D. Thin"],
+                answer: 1,
+                explain: "'Clever' nghĩa là thông minh, khôn khéo. 'Quiet' là yên lặng, trầm tính."
+            },
+
+            // Động vật
+            {
+                topic: "🐱 Động vật",
+                question: "Con vật nào biết bay và hay đi kiếm ăn vào ban đêm?",
+                options: ["A. Bat", "B. Dolphin", "C. Kangaroo", "D. Lion"],
+                answer: 0,
+                explain: "'Bat' là con dơi. 'Dolphin' là cá heo, 'Kangaroo' là chuột túi."
+            },
+            {
+                topic: "🐱 Động vật",
+                question: "'Dolphin' là loài động vật thông minh nào dưới biển?",
+                options: ["A. Cá mập", "B. Cá voi", "C. Cá heo", "D. Con rùa"],
+                answer: 2,
+                explain: "'Dolphin' có nghĩa là cá heo. Cá mập là 'Shark', cá voi là 'Whale'."
+            },
+            {
+                topic: "🐱 Động vật",
+                question: "Con vật nào sống ở Úc và nhảy rất cao bằng 2 chân sau?",
+                options: ["A. Panda", "B. Kangaroo", "C. Bear", "D. Rabbit"],
+                answer: 1,
+                explain: "'Kangaroo' là con chuột túi, biểu tượng của nước Úc."
+            },
+            {
+                topic: "🐱 Động vật",
+                question: "Loài chim có bộ lông nhiều màu sắc và có thể nhại lại tiếng người là:",
+                options: ["A. Parrot", "B. Bat", "C. Insect", "D. Fly"],
+                answer: 0,
+                explain: "'Parrot' là con vẹt."
+            },
+            {
+                topic: "🐱 Động vật",
+                question: "Côn trùng nói chung trong tiếng Anh được gọi là:",
+                options: ["A. Pet", "B. Insect", "C. Lion", "D. Whale"],
+                answer: 1,
+                explain: "'Insect' nghĩa là côn trùng (sâu bọ, kiến, ong...)."
+            },
+
+            // Đồ ăn & Thức uống
+            {
+                topic: "🍎 Đồ ăn & Thức uống",
+                question: "Món ăn làm từ bột mì dạng sợi rất nổi tiếng của Ý là:",
+                options: ["A. Cheese", "B. Pancake", "C. Pasta", "D. Soup"],
+                answer: 2,
+                explain: "'Pasta' là mì Ý. 'Pancake' là bánh kếp."
+            },
+            {
+                topic: "🍎 Đồ ăn & Thức uống",
+                question: "Nước chanh tươi mát trong tiếng Anh được gọi là:",
+                options: ["A. Milkshake", "B. Lemonade", "C. Tea", "D. Coffee"],
+                answer: 1,
+                explain: "'Lemonade' nghĩa là nước chanh. 'Milkshake' là sữa khuấy/sữa lắc."
+            },
+            {
+                topic: "🍎 Đồ ăn & Thức uống",
+                question: "Từ nào sau đây có nghĩa là 'Rau củ'?",
+                options: ["A. Sandwich", "B. Cheese", "C. Vegetables", "D. Pancake"],
+                answer: 2,
+                explain: "'Vegetables' nghĩa là rau củ quả."
+            },
+            {
+                topic: "🍎 Đồ ăn & Thức uống",
+                question: "Thức uống làm từ sữa kết hợp với trái cây hoặc kem đánh tan là:",
+                options: ["A. Milkshake", "B. Water", "C. Tea", "D. Lemonade"],
+                answer: 0,
+                explain: "'Milkshake' là món sữa lắc thơm ngon."
+            },
+
+            // Nhà cửa & Đồ dùng
+            {
+                topic: "🏠 Nhà cửa & Đồ dùng",
+                question: "Nơi nhô ra ngoài ở các tầng trên của căn nhà để ngắm cảnh gọi là:",
+                options: ["A. Basement", "B. Balcony", "C. Stairs", "D. Lift"],
+                answer: 1,
+                explain: "'Balcony' là ban công. 'Basement' là tầng hầm."
+            },
+            {
+                topic: "🏠 Nhà cửa & Đồ dùng",
+                question: "Thiết bị dùng để di chuyển lên xuống giữa các tầng nhà nhanh chóng là:",
+                options: ["A. Stairs", "B. Lift", "C. Address", "D. Blanket"],
+                answer: 1,
+                explain: "'Lift' (hoặc Elevator) nghĩa là thang máy."
+            },
+            {
+                topic: "🏠 Nhà cửa & Đồ dùng",
+                question: "Vật dụng dùng để đắp giữ ấm khi đi ngủ vào mùa đông là:",
+                options: ["A. Towel", "B. Toothbrush", "C. Blanket", "D. Cup"],
+                answer: 2,
+                explain: "'Blanket' là cái chăn/mền. 'Towel' là khăn tắm."
+            },
+            {
+                topic: "🏠 Nhà cửa & Đồ dùng",
+                question: "Bé dùng vật gì để chải sạch răng mỗi ngày?",
+                options: ["A. Toothbrush", "B. Towel", "C. Glass", "D. Bowl"],
+                answer: 0,
+                explain: "'Toothbrush' là bàn chải đánh răng."
+            },
+            {
+                topic: "🏠 Nhà cửa & Đồ dùng",
+                question: "Để đựng canh hoặc ăn cơm, bé thường dùng cái gì?",
+                options: ["A. Cup", "B. Glass", "C. Bowl", "D. Blanket"],
+                answer: 2,
+                explain: "'Bowl' nghĩa là cái bát/tô."
+            },
+
+            // Trường học
+            {
+                topic: "🏫 Trường học",
+                question: "Nhiệm vụ bé cần hoàn thành ở nhà sau buổi học gọi là:",
+                options: ["A. Textbooks", "B. Homework", "C. Classmate", "D. Dictionary"],
+                answer: 1,
+                explain: "'Homework' là bài tập về nhà."
+            },
+            {
+                topic: "🏫 Trường học",
+                question: "Quyển sách dùng để tra cứu nghĩa của từ mới là:",
+                options: ["A. Dictionary", "B. Map", "C. Board", "D. Page"],
+                answer: 0,
+                explain: "'Dictionary' nghĩa là từ điển."
+            },
+            {
+                topic: "🏫 Trường học",
+                question: "Người bạn học cùng lớp với bé được gọi là:",
+                options: ["A. Teacher", "B. Classmate", "C. Cousin", "D. Child"],
+                answer: 1,
+                explain: "'Classmate' là bạn cùng lớp."
+            },
+            {
+                topic: "🏫 Trường học",
+                question: "Vật giúp bé xem vị trí các quốc gia và đại dương trên thế giới là:",
+                options: ["A. Map", "B. Board", "C. Page", "D. Eraser"],
+                answer: 0,
+                explain: "'Map' nghĩa là bản đồ."
+            },
+
+            // Trang phục
+            {
+                topic: "👗 Trang phục",
+                question: "Chiếc áo khoác ấm, dáng dài mặc vào mùa đông gọi là:",
+                options: ["A. Jacket", "B. Coat", "C. Sweater", "D. Scarfe"],
+                answer: 1,
+                explain: "'Coat' là áo khoác dáng dài. 'Jacket' là áo khoác ngắn."
+            },
+            {
+                topic: "👗 Trang phục",
+                question: "Bé quấn vật gì vào cổ để giữ ấm khi trời lạnh?",
+                options: ["A. Gloves", "B. Boots", "C. Scarf", "D. Helmet"],
+                answer: 2,
+                explain: "'Scarf' (hoặc Scarfe) nghĩa là khăn quàng cổ."
+            },
+            {
+                topic: "👗 Trang phục",
+                question: "Đồ vật giúp bảo vệ đầu khi bé đi xe đạp hoặc xe máy là:",
+                options: ["A. Helmet", "B. Boots", "C. Gloves", "D. Sweater"],
+                answer: 0,
+                explain: "'Helmet' nghĩa là mũ bảo hiểm."
+            },
+            {
+                topic: "👗 Trang phục",
+                question: "Đôi vật đeo vào hai bàn tay để giữ ấm là:",
+                options: ["A. Boots", "B. Gloves", "C. Ice skates", "D. Socks"],
+                answer: 1,
+                explain: "'Gloves' nghĩa là bao tay / găng tay."
+            },
+
+            // Nơi chốn & Giao thông
+            {
+                topic: "🏥 Nơi chốn & Giao thông",
+                question: "Nơi chứa rất nhiều sách để bé đến đọc và mượn sách là:",
+                options: ["A. Museum", "B. Library", "C. Hospital", "D. Cinema"],
+                answer: 1,
+                explain: "'Library' là thư viện. 'Museum' là bảo tàng."
+            },
+            {
+                topic: "🏥 Nơi chốn & Giao thông",
+                question: "Nơi bác sĩ và y tá chăm sóc cho bệnh nhân là:",
+                options: ["A. Hospital", "B. Supermarket", "C. Cinema", "D. Bus station"],
+                answer: 0,
+                explain: "'Hospital' nghĩa là bệnh viện."
+            },
+            {
+                topic: "🏥 Nơi chốn & Giao thông",
+                question: "Nơi bé đến để xem những bộ phim hoạt hình hay trên màn hình lớn là:",
+                options: ["A. Museum", "B. Library", "C. Cinema", "D. Market"],
+                answer: 2,
+                explain: "'Cinema' là rạp chiếu phim."
+            },
+            {
+                topic: "🏥 Nơi chốn & Giao thông",
+                question: "Phương tiện giao thông bay trên trời có cánh quạt to phía trên là:",
+                options: ["A. Tractor", "B. Train", "C. Helicopter", "D. Bus"],
+                answer: 2,
+                explain: "'Helicopter' nghĩa là máy bay trực thăng."
+            },
+            {
+                topic: "🏥 Nơi chốn & Giao thông",
+                question: "Xe máy kéo thường thấy ở các nông trại được gọi là:",
+                options: ["A. Tractor", "B. Bus", "C. Lorry", "D. Train"],
+                answer: 0,
+                explain: "'Tractor' nghĩa là xe máy kéo ở nông trại."
+            },
+
+            // Thể thao & Giải trí
+            {
+                topic: "⚽ Thể thao & Giải trí",
+                question: "Môn thể thao di chuyển mượt mà trên mặt băng bằng giày chuyên dụng là:",
+                options: ["A. Roller-skating", "B. Ice-skating", "C. Sailing", "D. Climbing"],
+                answer: 1,
+                explain: "'Ice-skating' là trượt băng. 'Roller-skating' là trượt patin."
+            },
+            {
+                topic: "⚽ Thể thao & Giải trí",
+                question: "Hoạt động điều khiển thuyền đi trên mặt nước nhờ lực gió là:",
+                options: ["A. Sailing", "B. Climbing", "C. Fishing", "D. Swimming"],
+                answer: 0,
+                explain: "'Sailing' nghĩa là chèo thuyền / đi thuyền buồm."
+            },
+            {
+                topic: "⚽ Thể thao & Giải trí",
+                question: "Sách có nhiều hình vẽ truyện tranh hài hước gọi là:",
+                options: ["A. Textbook", "B. Comic book", "C. Dictionary", "D. Page"],
+                answer: 1,
+                explain: "'Comic book' nghĩa là truyện tranh."
+            },
+            {
+                topic: "⚽ Thể thao & Giải trí",
+                question: "Buổi dã ngoại ngoài trời cùng gia đình và thức ăn nhẹ gọi là:",
+                options: ["A. Party", "B. Picnic", "C. Film", "D. Cinema"],
+                answer: 1,
+                explain: "'Picnic' nghĩa là chuyến dã ngoại."
+            },
+
+            // Sức khỏe & Cơ thể
+            {
+                topic: "🩺 Sức khỏe & Cơ thể",
+                question: "Bộ phận nối giữa đầu và thân người là:",
+                options: ["A. Back", "B. Neck", "C. Shoulder", "D. Stomach"],
+                answer: 1,
+                explain: "'Neck' nghĩa là cái cổ."
+            },
+            {
+                topic: "🩺 Sức khỏe & Cơ thể",
+                question: "Khi bé ăn no, thức ăn sẽ nằm ở bộ phận nào?",
+                options: ["A. Shoulder", "B. Back", "C. Stomach", "D. Tooth"],
+                answer: 2,
+                explain: "'Stomach' nghĩa là dạ dày / bụng."
+            },
+            {
+                topic: "🩺 Sức khỏe & Cơ thể",
+                question: "Căn bệnh làm cho cơ thể bị nóng sốt, nhiệt độ tăng cao gọi là:",
+                options: ["A. Cough", "B. Temperature / Fever", "C. Toothache", "D. Headache"],
+                answer: 1,
+                explain: "'Temperature' hoặc 'Fever' nghĩa là bị sốt."
+            },
+            {
+                topic: "🩺 Sức khỏe & Cơ thể",
+                question: "Triệu chứng khi bé bị đau ở trong đầu là:",
+                options: ["A. Stomach-ache", "B. Toothache", "C. Headache", "D. Cough"],
+                answer: 2,
+                explain: "'Headache' là chứng đau đầu. (Head = đầu, ache = đau)."
+            },
+            {
+                topic: "🩺 Sức khỏe & Cơ thể",
+                question: "Khi ăn quá nhiều kẹo ngọt và không đánh răng, bé dễ bị:",
+                options: ["A. Toothache", "B. Headache", "C. Stomach-ache", "D. Cold"],
+                answer: 0,
+                explain: "'Toothache' nghĩa là đau răng."
+            },
+
+            // Thời tiết & Tự nhiên
+            {
+                topic: "🌤️ Thời tiết & Tự nhiên",
+                question: "Trời có nhiều mây trắng hoặc xám bao phủ được gọi là:",
+                options: ["A. Rainy", "B. Cloudy", "C. Snowy", "D. Sunny"],
+                answer: 1,
+                explain: "'Cloudy' nghĩa là có nhiều mây."
+            },
+            {
+                topic: "🌤️ Thời tiết & Tự nhiên",
+                question: "Thời tiết có hiện tượng hơi nước mờ mịt làm giảm tầm nhìn gọi là:",
+                options: ["A. Foggy", "B. Windy", "C. Sunny", "D. Rainy"],
+                answer: 0,
+                explain: "'Foggy' nghĩa là có sương mù."
+            },
+            {
+                topic: "🌤️ Thời tiết & Tự nhiên",
+                question: "Dòng nước chảy từ trên núi cao đổ xối xả xuống bên dưới gọi là:",
+                options: ["A. Island", "B. Waterfall", "C. Jungle", "D. Forest"],
+                answer: 1,
+                explain: "'Waterfall' nghĩa là thác nước."
+            },
+            {
+                topic: "🌤️ Thời tiết & Tự nhiên",
+                question: "Vùng đất được bao bọc xung quanh hoàn toàn bởi nước là:",
+                options: ["A. Jungle", "B. Forest", "C. Island", "D. Waterfall"],
+                answer: 2,
+                explain: "'Island' nghĩa là hòn đảo (lưu ý chữ 's' là âm câm)."
+            },
+            {
+                topic: "🌤️ Thời tiết & Tự nhiên",
+                question: "Khu rừng nhiệt đới rậm rạp với nhiều cây cối và động vật hoang dã là:",
+                options: ["A. Jungle", "B. Island", "C. Waterfall", "D. Cloud"],
+                answer: 0,
+                explain: "'Jungle' nghĩa là rừng rậm nhiệt đới."
+            },
+            {
+                topic: "👨‍👩‍‍👧 Gia đình",
+                question: "Cháu trai của ông bà trong tiếng Anh được gọi là:",
+                options: ["A. Grandson", "B. Granddaughter", "C. Cousin", "D. Son"],
+                answer: 0,
+                explain: "'Grandson' nghĩa là cháu trai của ông bà."
+            },
+            {
+                topic: "✨ Ngoại hình",
+                question: "Từ nào dùng để chỉ 'Mái tóc thẳng'?",
+                options: ["A. Curly hair", "B. Straight hair", "C. Blonde hair", "D. Fair hair"],
+                answer: 1,
+                explain: "'Straight hair' nghĩa là mái tóc thẳng."
+            },
+            {
+                topic: "🐱 Động vật",
+                question: "Con vật được nuôi trong nhà như một thành viên thân thiết gọi là:",
+                options: ["A. Insect", "B. Pet", "C. Bat", "D. Whale"],
+                answer: 1,
+                explain: "'Pet' nghĩa là thú cưng / vật nuôi trong nhà."
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        function startGame() {
+            currentQ = 0;
+            score = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = quizData[currentQ];
+            document.getElementById('current-question').innerText = currentQ + 1;
+            document.getElementById('score').innerText = score;
+            document.getElementById('topic-tag').innerText = q.topic;
+            document.getElementById('question-text').innerText = q.question;
+            
+            // Progress Bar
+            const progress = ((currentQ + 1) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            // Reset States
+            document.getElementById('explanation-box').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            selectedOption = null;
+
+            // Render Options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option w-full text-left p-4 rounded-xl border-2 border-indigo-100 bg-white font-semibold text-gray-700 text-base md:text-lg flex items-center justify-between';
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-gray-300"></i>`;
+                btn.onclick = () => checkAnswer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(idx, btn) {
+            if (selectedOption !== null) return; // Prevent multi click
+            selectedOption = idx;
+
+            const q = quizData[currentQ];
+            const allBtns = document.getElementById('options-container').children;
+
+            if (idx === q.answer) {
+                score++;
+                document.getElementById('score').innerText = score;
+                btn.className = 'btn-option w-full text-left p-4 rounded-xl border-2 font-semibold text-lg flex items-center justify-between correct-anim';
+                btn.innerHTML = `<span>${q.options[idx]}</span> <i class="fa-solid fa-circle-check text-white text-xl"></i>`;
+            } else {
+                btn.className = 'btn-option w-full text-left p-4 rounded-xl border-2 font-semibold text-lg flex items-center justify-between wrong-anim';
+                btn.innerHTML = `<span>${q.options[idx]}</span> <i class="fa-solid fa-circle-xmark text-white text-xl"></i>`;
+                
+                // Highlight correct one
+                const correctBtn = allBtns[q.answer];
+                correctBtn.className = 'btn-option w-full text-left p-4 rounded-xl border-2 border-green-500 bg-green-100 text-green-800 font-semibold text-lg flex items-center justify-between';
+                correctBtn.innerHTML = `<span>${q.options[q.answer]}</span> <i class="fa-solid fa-circle-check text-green-600 text-xl"></i>`;
+            }
+
+            // Show explanation
+            document.getElementById('explanation-text').innerText = q.explain;
+            document.getElementById('explanation-box').classList.remove('hidden');
+
+            // Show Next Button
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if (currentQ < quizData.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+
+            const feedback = document.getElementById('result-feedback');
+            const icon = document.getElementById('result-icon');
+
+            if (score >= 45) {
+                icon.innerText = '🏆';
+                feedback.innerText = "EXCELLENT!!";
+            } else if (score >= 35) {
+                icon.innerText = '🌟';
+                feedback.innerText = "WELL DONE! ";
+            } else if (score >= 25) {
+                icon.innerText = '👍';
+                feedback.innerText = "GOOD JOB!";
+            } else {
+                icon.innerText = '💪';
+                feedback.innerText = "PRACTICE MORE, PLEASE! ";
+            }
+        }
+    </script>
+</body>
+</html>
